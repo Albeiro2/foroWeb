@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -28,9 +30,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String findByUserId() {
-      String loggedInUserEmail =  authenticationFacade.getAuthentication().getName();
-      UserEntity loggedUser = userRepository.findByEmail(loggedInUserEmail).orElseThrow(() -> new RuntimeException("User not Found"));
-      return loggedUser.getId();
+        String loggedInUser = authenticationFacade.getAuthentication().getName();
+        return userRepository.findByEmail(loggedInUser)
+                .map(UserEntity::getId)
+                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getId))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public String findByUserName() {
+        String loggedInUser = authenticationFacade.getAuthentication().getName();
+        return userRepository.findByEmail(loggedInUser)
+                .map(UserEntity::getUserName)
+                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getUserName))
+                .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     private UserEntity convertToEntity(UserRequest request){

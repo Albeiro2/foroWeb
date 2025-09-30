@@ -5,6 +5,7 @@ import com.albeirobaena.foroweb.io.PostRequest;
 import com.albeirobaena.foroweb.io.PostResponse;
 import com.albeirobaena.foroweb.repository.PostRepository;
 import com.albeirobaena.foroweb.service.PostService;
+import com.albeirobaena.foroweb.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class PostServiceImpl implements PostService {
 
+    private final UserService userService;
     private final PostRepository postRepository;
 
     @Override
@@ -43,8 +45,8 @@ public class PostServiceImpl implements PostService {
 
     private PostEntity convertToEntity(PostRequest request) {
         return  PostEntity.builder()
-                .userId(request.getUserId())
-                .userName(request.getUserName())
+                .userId(userService.findByUserId())
+                .userName(userService.findByUserName())
                 .post(request.getPost())
                 .datePost(LocalDateTime.now())
                 .like(0)

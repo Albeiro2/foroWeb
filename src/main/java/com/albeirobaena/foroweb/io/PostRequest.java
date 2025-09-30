@@ -12,8 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PostRequest {
 
-    private String userId;
-    private String userName;
     private String title;
     private String post;
 }
