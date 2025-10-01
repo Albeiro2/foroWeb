@@ -46,6 +46,21 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    @Override
+    public UserResponse getUserLogged() {
+        UserEntity user = userRepository.findById(findByUserId())
+                .orElseThrow(()->new RuntimeException("User not found"));
+        return convertToResponse(user);
+
+    }
+
+    @Override
+    public UserResponse getUser(String userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(()->new RuntimeException("User not found"));
+        return convertToResponse(user);
+    }
+
     private UserEntity convertToEntity(UserRequest request){
        return UserEntity.builder()
                 .email(request.getEmail())

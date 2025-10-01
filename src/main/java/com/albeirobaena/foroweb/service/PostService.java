@@ -12,4 +12,6 @@ PostResponse uploadPost (PostRequest request);
 List<PostResponse> fetchAllPost();
 
 List<PostResponse> fetchAllPostOfUser(String userId);
+
+List<PostResponse> fetchAllPostOfUserLogged();
 }

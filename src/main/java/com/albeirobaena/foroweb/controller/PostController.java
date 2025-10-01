@@ -27,8 +27,12 @@ public class PostController {
         return postService.fetchAllPost();
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/{userId}")
     public List<PostResponse> fetchPostsUser(@PathVariable String userId){
         return postService.fetchAllPostOfUser(userId);
+    }
+    @GetMapping("/logged")
+    public List<PostResponse> fetchPostsUserLogged(){
+        return  postService.fetchAllPostOfUserLogged();
     }
 }

@@ -20,4 +20,14 @@ public class UserController {
         return userService.registerUser(request);
     }
 
+    @GetMapping("/user/logged")
+    public UserResponse getUserLogged(){
+      return   userService.getUserLogged();
+    }
+
+    @GetMapping("/user/{userId}")
+    public  UserResponse getUser(@PathVariable String userId){
+        return  userService.getUser(userId);
+    }
+
 }

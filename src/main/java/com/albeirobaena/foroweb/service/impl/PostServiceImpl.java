@@ -70,4 +70,11 @@ public class PostServiceImpl implements PostService {
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<PostResponse> fetchAllPostOfUserLogged() {
+        return postRepository.findByUserId(userService.findByUserId()).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
 }

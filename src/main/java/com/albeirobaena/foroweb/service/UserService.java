@@ -11,4 +11,8 @@ public interface UserService {
     String findByUserId();
 
     String findByUserName();
+
+    UserResponse getUserLogged();
+
+    UserResponse getUser(String userId);
 }
