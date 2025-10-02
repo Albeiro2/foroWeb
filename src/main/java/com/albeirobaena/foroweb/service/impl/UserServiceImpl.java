@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +33,8 @@ public class UserServiceImpl implements UserService {
     public String findByUserId() {
         String loggedInUser = authenticationFacade.getAuthentication().getName();
         return userRepository.findByEmail(loggedInUser)
-                .map(UserEntity::getId)
-                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getId))
+                .map(UserEntity::getSecondId)
+                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getSecondId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -48,15 +49,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserLogged() {
-        UserEntity user = userRepository.findById(findByUserId())
+        UserEntity user = userRepository.findBySecondId(findByUserId())
                 .orElseThrow(()->new RuntimeException("User not found"));
         return convertToResponse(user);
 
     }
 
     @Override
-    public UserResponse getUser(String userId) {
-        UserEntity user = userRepository.findById(userId)
+    public UserResponse getUser(String userSecondId) {
+        UserEntity user = userRepository.findBySecondId(userSecondId)
                 .orElseThrow(()->new RuntimeException("User not found"));
         return convertToResponse(user);
     }
@@ -66,12 +67,13 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .userName(request.getUserName())
+                .secondId(UUID.randomUUID().toString())
                 .build();
     }
 
     private UserResponse convertToResponse(UserEntity userSaved){
        return UserResponse.builder()
-                .id(userSaved.getId())
+                .secondId(userSaved.getSecondId())
                 .email(userSaved.getEmail())
                 .userName(userSaved.getUserName())
                 .build();

@@ -21,7 +21,8 @@ public class PostEntity {
 
     @Id
     private String id;
-    private String userId;
+    private String secondId;
+    private String userSecondId;
     private String userName;
     private String title;
     private String post;

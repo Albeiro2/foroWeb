@@ -16,6 +16,7 @@ public class UserEntity {
 
         @Id
         private String id;
+        private String secondId;
         private String userName;
         private String email;
         private String password;

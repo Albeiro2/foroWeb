@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -30,8 +31,8 @@ public class PostServiceImpl implements PostService {
 
     private PostResponse convertToResponse(PostEntity post) {
         return  PostResponse.builder()
-                .id(post.getId())
-                .userId(post.getUserId())
+                .secondId(post.getSecondId())
+                .userSecondId(post.getUserSecondId())
                 .userName(post.getUserName())
                 .post(post.getPost())
                 .title(post.getTitle())
@@ -45,7 +46,8 @@ public class PostServiceImpl implements PostService {
 
     private PostEntity convertToEntity(PostRequest request) {
         return  PostEntity.builder()
-                .userId(userService.findByUserId())
+                .userSecondId(userService.findByUserId())
+                .secondId(UUID.randomUUID().toString())
                 .userName(userService.findByUserName())
                 .post(request.getPost())
                 .datePost(LocalDateTime.now())
@@ -65,16 +67,23 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> fetchAllPostOfUser(String userId) {
-        return postRepository.findByUserId(userId).stream()
+    public List<PostResponse> fetchAllPostOfUser(String userSecondId) {
+        return postRepository.findByUserSecondId(userSecondId).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PostResponse> fetchAllPostOfUserLogged() {
-        return postRepository.findByUserId(userService.findByUserId()).stream()
+        return postRepository.findByUserSecondId(userService.findByUserId()).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public PostResponse findPost(String secondId) {
+        PostEntity post = postRepository.findBySecondId(secondId)
+                .orElseThrow(()-> new RuntimeException("Post no found"));
+        return convertToResponse(post);
     }
 }
