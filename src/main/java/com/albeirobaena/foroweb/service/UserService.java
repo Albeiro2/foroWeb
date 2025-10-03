@@ -15,4 +15,6 @@ public interface UserService {
     UserResponse getUserLogged();
 
     UserResponse getUser(String userId);
+
+    String getSecondId(String log);
 }

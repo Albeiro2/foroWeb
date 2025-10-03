@@ -13,4 +13,6 @@ public class UserResponse {
     private String secondId;
     private String userName;
     private String email;
+    private String description;
+    private String name;
 }

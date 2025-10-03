@@ -62,12 +62,23 @@ public class UserServiceImpl implements UserService {
         return convertToResponse(user);
     }
 
+    @Override
+    public String getSecondId(String log) {
+        return userRepository.findByEmail(log)
+                .map(UserEntity::getSecondId)
+                .or(() -> userRepository.findByUserName(log).map(UserEntity::getSecondId))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     private UserEntity convertToEntity(UserRequest request){
        return UserEntity.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .userName(request.getUserName())
                 .secondId(UUID.randomUUID().toString())
+                .name(request.getName())
+                .description(request.getDescription())
+                .keyRecovery(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -76,6 +87,8 @@ public class UserServiceImpl implements UserService {
                 .secondId(userSaved.getSecondId())
                 .email(userSaved.getEmail())
                 .userName(userSaved.getUserName())
+                .description(userSaved.getDescription())
+                .name(userSaved.getName())
                 .build();
     }
 }

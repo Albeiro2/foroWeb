@@ -3,6 +3,7 @@ package com.albeirobaena.foroweb.controller;
 import com.albeirobaena.foroweb.io.AuthenticationRequest;
 import com.albeirobaena.foroweb.io.AuthenticationResponse;
 import com.albeirobaena.foroweb.service.AppUserDetailsService;
+import com.albeirobaena.foroweb.service.UserService;
 import com.albeirobaena.foroweb.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +20,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
     private final AppUserDetailsService userDetailsService;
+    private final UserService userService;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/login")
@@ -26,6 +28,7 @@ public class AuthController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLog(),request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLog());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-        return new AuthenticationResponse(request.getLog(),jwtToken);
+        String secondId = userService.getSecondId(jwtUtil.extractUsername(jwtToken));
+        return new AuthenticationResponse(jwtToken,secondId);
     }
 }
