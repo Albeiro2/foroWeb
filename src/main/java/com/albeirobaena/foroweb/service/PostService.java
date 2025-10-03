@@ -15,5 +15,5 @@ List<PostResponse> fetchAllPostOfUser(String userId);
 
 List<PostResponse> fetchAllPostOfUserLogged();
 
-PostResponse findPost(String secondId);
+PostResponse findPost(String publicId);
 }

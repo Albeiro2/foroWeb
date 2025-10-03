@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -28,7 +27,7 @@ public class AuthController {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getLog(),request.getPassword()));
         final UserDetails userDetails = userDetailsService.loadUserByUsername(request.getLog());
         final String jwtToken = jwtUtil.generateToken(userDetails);
-        String secondId = userService.getSecondId(jwtUtil.extractUsername(jwtToken));
-        return new AuthenticationResponse(jwtToken,secondId);
+        String publicId = userService.getPublicId(jwtUtil.extractUsername(jwtToken));
+        return new AuthenticationResponse(jwtToken,publicId);
     }
 }

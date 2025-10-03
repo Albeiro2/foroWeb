@@ -10,6 +10,6 @@ import java.util.Optional;
 @Repository
 public interface PostRepository extends MongoRepository<PostEntity, String> {
 
-    List<PostEntity> findByUserSecondId(String userSecondId);
-    Optional<PostEntity> findBySecondId(String secondId);
+    List<PostEntity> findByUserPublicId(String userPublicId);
+    Optional<PostEntity> findByPublicId(String publicId);
 }

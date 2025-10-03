@@ -31,8 +31,8 @@ public class PostServiceImpl implements PostService {
 
     private PostResponse convertToResponse(PostEntity post) {
         return  PostResponse.builder()
-                .secondId(post.getSecondId())
-                .userSecondId(post.getUserSecondId())
+                .publicId(post.getPublicId())
+                .userPublicId(post.getUserPublicId())
                 .userName(post.getUserName())
                 .post(post.getPost())
                 .title(post.getTitle())
@@ -46,8 +46,8 @@ public class PostServiceImpl implements PostService {
 
     private PostEntity convertToEntity(PostRequest request) {
         return  PostEntity.builder()
-                .userSecondId(userService.findByUserId())
-                .secondId(UUID.randomUUID().toString())
+                .userPublicId(userService.findByUserId())
+                .publicId(UUID.randomUUID().toString())
                 .userName(userService.findByUserName())
                 .post(request.getPost())
                 .datePost(LocalDateTime.now())
@@ -67,22 +67,22 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostResponse> fetchAllPostOfUser(String userSecondId) {
-        return postRepository.findByUserSecondId(userSecondId).stream()
+    public List<PostResponse> fetchAllPostOfUser(String userPublicId) {
+        return postRepository.findByUserPublicId(userPublicId).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<PostResponse> fetchAllPostOfUserLogged() {
-        return postRepository.findByUserSecondId(userService.findByUserId()).stream()
+        return postRepository.findByUserPublicId(userService.findByUserId()).stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
 
     @Override
-    public PostResponse findPost(String secondId) {
-        PostEntity post = postRepository.findBySecondId(secondId)
+    public PostResponse findPost(String publicId) {
+        PostEntity post = postRepository.findByPublicId(publicId)
                 .orElseThrow(()-> new RuntimeException("Post no found"));
         return convertToResponse(post);
     }

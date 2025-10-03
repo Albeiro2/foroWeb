@@ -14,8 +14,8 @@ import java.util.List;
 @Builder
 public class PostResponse {
 
-    private String secondId;
-    private String userSecondId;
+    private String publicId;
+    private String userPublicId;
     private String userName;
     private String post;
     private String title;

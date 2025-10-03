@@ -27,7 +27,7 @@ public class PostController {
         return postService.fetchAllPost();
     }
 
-    @GetMapping("/{userSecondId}")
+    @GetMapping("/{userPublicId}")
     public List<PostResponse> fetchPostsUser(@PathVariable String userSecondId){
         return postService.fetchAllPostOfUser(userSecondId);
     }
@@ -36,7 +36,7 @@ public class PostController {
         return  postService.fetchAllPostOfUserLogged();
     }
 
-    @GetMapping("/find/{secondId}")
+    @GetMapping("/find/{publicId}")
     public PostResponse findPost(@PathVariable String secondId){
         return postService.findPost(secondId);
     }

@@ -2,6 +2,7 @@ package com.albeirobaena.foroweb.service.impl;
 
 
 import com.albeirobaena.foroweb.entity.UserEntity;
+import com.albeirobaena.foroweb.io.KeyResponse;
 import com.albeirobaena.foroweb.io.UserRequest;
 import com.albeirobaena.foroweb.io.UserResponse;
 import com.albeirobaena.foroweb.repository.UserRepository;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -33,8 +33,8 @@ public class UserServiceImpl implements UserService {
     public String findByUserId() {
         String loggedInUser = authenticationFacade.getAuthentication().getName();
         return userRepository.findByEmail(loggedInUser)
-                .map(UserEntity::getSecondId)
-                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getSecondId))
+                .map(UserEntity::getPublicId)
+                .or(() -> userRepository.findByUserName(loggedInUser).map(UserEntity::getPublicId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
@@ -49,25 +49,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse getUserLogged() {
-        UserEntity user = userRepository.findBySecondId(findByUserId())
+        UserEntity user = userRepository.findByPublicId(findByUserId())
                 .orElseThrow(()->new RuntimeException("User not found"));
         return convertToResponse(user);
 
     }
 
     @Override
-    public UserResponse getUser(String userSecondId) {
-        UserEntity user = userRepository.findBySecondId(userSecondId)
+    public UserResponse getUser(String userPublicId) {
+        UserEntity user = userRepository.findByPublicId(userPublicId)
                 .orElseThrow(()->new RuntimeException("User not found"));
         return convertToResponse(user);
     }
 
     @Override
-    public String getSecondId(String log) {
+    public String getPublicId(String log) {
         return userRepository.findByEmail(log)
-                .map(UserEntity::getSecondId)
-                .or(() -> userRepository.findByUserName(log).map(UserEntity::getSecondId))
+                .map(UserEntity::getPublicId)
+                .or(() -> userRepository.findByUserName(log).map(UserEntity::getPublicId))
                 .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @Override
+    public KeyResponse getKey() {
+        UserEntity user = userRepository.findByPublicId(findByUserId())
+                .orElseThrow(()-> new RuntimeException("User not found"));
+        return new KeyResponse(user.getKeyRecovery());
     }
 
     private UserEntity convertToEntity(UserRequest request){
@@ -75,7 +82,7 @@ public class UserServiceImpl implements UserService {
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .userName(request.getUserName())
-                .secondId(UUID.randomUUID().toString())
+                .publicId(UUID.randomUUID().toString())
                 .name(request.getName())
                 .description(request.getDescription())
                 .keyRecovery(UUID.randomUUID().toString())
@@ -84,7 +91,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponse convertToResponse(UserEntity userSaved){
        return UserResponse.builder()
-                .secondId(userSaved.getSecondId())
+                .publicId(userSaved.getPublicId())
                 .email(userSaved.getEmail())
                 .userName(userSaved.getUserName())
                 .description(userSaved.getDescription())

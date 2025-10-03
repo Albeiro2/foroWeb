@@ -8,5 +8,5 @@ import lombok.Getter;
 public class AuthenticationResponse {
 
     private String token;
-    private String secondId;
+    private String publicId;
 }

@@ -16,7 +16,7 @@ public class UserEntity {
 
         @Id
         private String id;
-        private String secondId;
+        private String publicId;
         private String name;
         private String description;
         private String keyRecovery;

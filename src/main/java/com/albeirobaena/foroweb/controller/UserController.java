@@ -1,6 +1,7 @@
 package com.albeirobaena.foroweb.controller;
 
 
+import com.albeirobaena.foroweb.io.KeyResponse;
 import com.albeirobaena.foroweb.io.UserRequest;
 import com.albeirobaena.foroweb.io.UserResponse;
 import com.albeirobaena.foroweb.service.impl.UserServiceImpl;
@@ -30,4 +31,8 @@ public class UserController {
         return  userService.getUser(userId);
     }
 
+    @GetMapping("/user/key")
+    public KeyResponse getKeyRecovery(){
+       return userService.getKey();
+    }
 }
